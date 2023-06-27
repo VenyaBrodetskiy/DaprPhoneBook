@@ -1,4 +1,5 @@
 using Dapr.Client;
+using Manager.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Manager.Controllers
@@ -17,22 +18,22 @@ namespace Manager.Controllers
         }
 
         [HttpGet("/phonebook")]
-        public async Task<ActionResult<List<string>>> GetAllPhonesAsync()
+        public async Task<ActionResult<List<PhoneName>>> GetAllPhonesAsync()
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<List<string>>(HttpMethod.Get, "phoneaccessor", "/phonebook");
+                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "phoneaccessor", "/phonebook");
 
                 _logger.LogInformation("result returned from phoneaccessor");
 
                 if (result is null)
                 {
-                    _logger.LogInformation("Request from DB return empty list of phones");
+                    _logger.LogInformation("Request from acessor service return empty list of phones");
                     return NotFound("phones not found");
                 }
                 else
                 {
-                    _logger.LogInformation("List of phones successfully retrieved from DB");
+                    _logger.LogInformation("List of phones successfully retrieved from accessor service");
                     return Ok(result);
                 }
             }
