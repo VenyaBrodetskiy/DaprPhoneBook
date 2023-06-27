@@ -1,4 +1,5 @@
 
+using Accessor.Models;
 using Accessor.Services;
 
 namespace Accessor
@@ -15,6 +16,10 @@ namespace Accessor
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.Configure<PhoneBookDbSettings>(
+                builder.Configuration.GetSection("PhonesDatabase"));
+            builder.Services.AddSingleton<DbContext>();
 
             builder.Services.AddScoped<PhoneBookService>();
 

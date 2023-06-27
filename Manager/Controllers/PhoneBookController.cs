@@ -24,8 +24,6 @@ namespace Manager.Controllers
             {
                 var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "phoneaccessor", "/phonebook");
 
-                _logger.LogInformation("result returned from phoneaccessor");
-
                 if (result is null)
                 {
                     _logger.LogInformation("Request from acessor service return empty list of phones");
@@ -34,6 +32,31 @@ namespace Manager.Controllers
                 else
                 {
                     _logger.LogInformation("List of phones successfully retrieved from accessor service");
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpPost("/phonebook")]
+        public async Task<ActionResult<PhoneName>> AddPhoneAsync(PhoneName phoneName)
+        {
+            try
+            {
+                var result = await _daprClient.InvokeMethodAsync<PhoneName, PhoneName>(HttpMethod.Post, "phoneaccessor", "/phonebook", phoneName);
+
+                if (result is null)
+                {
+                    _logger.LogInformation("Couldn't add phone");
+                    return BadRequest("Couldn't add phone");
+                }
+                else
+                {
+                    _logger.LogInformation("Sucessfully added");
                     return Ok(result);
                 }
             }

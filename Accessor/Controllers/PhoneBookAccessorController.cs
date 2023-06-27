@@ -41,5 +41,30 @@ namespace Accessor.Controllers
                 return Problem(ex.Message);
             }
         }
+
+        [HttpPost("/phonebook")]
+        public async Task<ActionResult<List<PhoneName>>> AddPhoneAsync(PhoneName phoneName)
+        {
+            try
+            {
+                var result = await _phoneBookService.AddPhoneName(phoneName);
+
+                if (result is null)
+                {
+                    _logger.LogInformation("Couldn't add phoneName to db");
+                    return BadRequest("Couldn't add phoneName to db");
+                }
+                else
+                {
+                    _logger.LogInformation("Successfully added");
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
     }
 }

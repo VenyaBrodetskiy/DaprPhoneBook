@@ -1,26 +1,60 @@
 ﻿using Accessor.Models;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Accessor.Services
 {
     public class PhoneBookService
     {
-
-        public async Task<List<PhoneName>> GetAllAsync()
+        private readonly DbContext _db;
+        public PhoneBookService(DbContext db)
         {
-            await Task.Delay(1);
+            _db = db;
+        }
 
-            return new List<PhoneName>()
+        public async Task<List<PhoneName>?> GetAllAsync()
+        {
+            try
             {
-                new PhoneName()
-                {
-                    Name = "Test",
-                    Phone = "053213211"
-                },
-                new PhoneName()
-                {
-                    Name = "Test2",
-                    Phone = "0531231234"
-                }
+                var result = await _db.phoneNameCollection.Find(new BsonDocument()).ToListAsync();
+
+                return result.Select(FromDto).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<PhoneName?> AddPhoneName(PhoneName phoneName)
+        {
+            try
+            {
+                await _db.phoneNameCollection.InsertOneAsync(ToDto(phoneName));
+
+                return phoneName;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private PhoneName FromDto(PhoneNameDto phoneName)
+        {
+            return new PhoneName()
+            {
+                Name = phoneName.Name,
+                Phone = phoneName.Phone
+            };
+        }
+
+        private PhoneNameDto ToDto(PhoneName phoneName)
+        {
+            return new PhoneNameDto()
+            {
+                Name = phoneName.Name,
+                Phone = phoneName.Phone
             };
         }
     }
