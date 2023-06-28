@@ -17,7 +17,7 @@ namespace Accessor.Controllers
             _phoneBookService = phoneBookService;
         }
 
-        [HttpGet("/phonebook")]
+        [HttpGet("/phonebooks")]
         public async Task<ActionResult<List<PhoneName>>> GetAllPhonesAsync()
         {
             try
@@ -44,6 +44,33 @@ namespace Accessor.Controllers
             }
         }
 
+        [HttpGet("/phonebook/{name}")]
+        public async Task<ActionResult<List<PhoneName>>> GetPhoneByNameAsync(string name)
+        {
+            try
+            {
+                _logger.LogInformation("in GetAllPhonesAsync method");
+
+                var result = await _phoneBookService.GetByNameAsync(name);
+
+                if (result is null)
+                {
+                    _logger.LogInformation("Request from DB return empty list of phones");
+                    return NotFound("phones not found");
+                }
+                else
+                {
+                    _logger.LogInformation("List of phones successfully retrieved from DB");
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
         [HttpPost("/phonebook")]
         public async Task<ActionResult<List<PhoneName>>> AddPhoneAsync(PhoneName phoneName)
         {
@@ -51,7 +78,7 @@ namespace Accessor.Controllers
             {
                 _logger.LogInformation("in AddPhoneAsync method");
 
-                var result = await _phoneBookService.AddPhoneName(phoneName);
+                var result = await _phoneBookService.AddPhoneNameAsync(phoneName);
 
                 if (result is null)
                 {

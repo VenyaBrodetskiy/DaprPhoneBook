@@ -26,7 +26,21 @@ namespace Accessor.Services
             }
         }
 
-        public async Task<PhoneName?> AddPhoneName(PhoneName phoneName)
+        public async Task<List<PhoneName>?> GetByNameAsync(string name)
+        {
+            try
+            {
+                var result = await _db.phoneNameCollection.Find(row => row.Name == name).ToListAsync();
+
+                return result.Select(FromDto).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<PhoneName?> AddPhoneNameAsync(PhoneName phoneName)
         {
             try
             {

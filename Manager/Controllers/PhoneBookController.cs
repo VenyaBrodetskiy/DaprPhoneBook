@@ -17,12 +17,12 @@ namespace Manager.Controllers
             _daprClient = daprClient;
         }
 
-        [HttpGet("/phonebook")]
+        [HttpGet("/phonebooks")]
         public async Task<ActionResult<List<PhoneName>>> GetAllPhonesAsync()
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", "/phonebook");
+                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", "/phonebooks");
 
                 if (result is null)
                 {
@@ -42,7 +42,33 @@ namespace Manager.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet("/phonebook")]
+        public async Task<ActionResult<List<PhoneName>>> GetPhoneByNameAsync(
+            [FromQuery(Name = "name")] string name)
+        {
+            try
+            {
+                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", $"/phonebook/{name}");
+
+                if (result is null)
+                {
+                    _logger.LogInformation("Request from acessor service return empty list of phones");
+                    return NotFound("phones not found");
+                }
+                else
+                {
+                    _logger.LogInformation("List of phones successfully retrieved from accessor service");
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpPost("/add_phone_to_queue")]
         public async Task<ActionResult<PhoneName>> AddPhoneToQueueAsync(PhoneName phoneName)
         {
             try
