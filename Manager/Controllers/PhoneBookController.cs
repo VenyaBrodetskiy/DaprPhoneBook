@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Manager.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class PhoneBookController : ControllerBase
     {
         private readonly ILogger<PhoneBookController> _logger;
@@ -42,7 +42,24 @@ namespace Manager.Controllers
             }
         }
 
-        [HttpPost("/phonebook")]
+        [HttpPost]
+        public async Task<ActionResult<PhoneName>> AddPhoneToQueueAsync(PhoneName phoneName)
+        {
+            try
+            {
+                await _daprClient.InvokeBindingAsync("phonequeue", "create", phoneName);
+
+                _logger.LogInformation("Sucessfully added");
+                return Ok("Sucessfully added to phonequeue");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpPost("/phonequeue")]
         public async Task<ActionResult<PhoneName>> AddPhoneAsync(PhoneName phoneName)
         {
             try

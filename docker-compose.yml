@@ -9,7 +9,8 @@ services:
     build:
       context: .
       dockerfile: Manager/Dockerfile
-    #depends_on:
+    depends_on:
+      - rabbitmq
     #  - placement
     #  - zipkin
     environment:
@@ -26,6 +27,7 @@ services:
         "-app-protocol", "http",
         "-dapr-http-port", "3500",
         #"-placement-host-address", "placement:50006",
+        "-components-path", "./dapr/components",
         "-config", "./dapr/config.yaml",
         "-log-level", "debug"]
     volumes:
@@ -42,11 +44,13 @@ services:
     build:
       context: .
       dockerfile: Accessor/Dockerfile
-    #depends_on:
+    depends_on:
+      - rabbitmq
     #  - placement
     #  - zipkin
     networks:
       - network-dapr
+
   accessor-dapr:
     image: "daprio/daprd:edge"
     command: ["./daprd",
@@ -55,6 +59,7 @@ services:
         "-app-protocol", "http",
         "-dapr-http-port", "3500",
         #"-placement-host-address", "placement:50006",
+        "-components-path", "./dapr/components",
         "-config", "./dapr/config.yaml",
         "-log-level", "debug"]
     volumes:
