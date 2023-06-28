@@ -54,6 +54,20 @@ namespace Accessor.Services
             }
         }
 
+        public async Task<long> DeleteByNameAsync(string name)
+        {
+            try
+            {
+                var result = await _db.phoneNameCollection.DeleteManyAsync(row => row.Name == name);
+
+                return result.DeletedCount;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         private PhoneName FromDto(PhoneNameDto phoneName)
         {
             return new PhoneName()

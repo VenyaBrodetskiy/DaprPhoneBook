@@ -49,7 +49,7 @@ namespace Accessor.Controllers
         {
             try
             {
-                _logger.LogInformation("in GetAllPhonesAsync method");
+                _logger.LogInformation("in GetPhoneByNameAsync method");
 
                 var result = await _phoneBookService.GetByNameAsync(name);
 
@@ -63,6 +63,25 @@ namespace Accessor.Controllers
                     _logger.LogInformation("List of phones successfully retrieved from DB");
                     return Ok(result);
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpDelete("/phonebook/{name}")]
+        public async Task<ActionResult<long>> DeletePhoneByNameAsync(string name)
+        {
+            try
+            {
+                _logger.LogInformation("in DeletePhoneByNameAsync method");
+
+                var result = await _phoneBookService.DeleteByNameAsync(name);
+
+                _logger.LogInformation("Deleted {result} phone with name: {name}", result, name);
+                return Ok(result);
             }
             catch (Exception ex)
             {

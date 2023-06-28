@@ -68,6 +68,24 @@ namespace Manager.Controllers
             }
         }
 
+        [HttpDelete("/phonebook")]
+        public async Task<ActionResult<List<PhoneName>>> DeletePhoneByNameAsync(
+            [FromQuery(Name = "name")] string name)
+        {
+            try
+            {
+                var result = await _daprClient.InvokeMethodAsync<long>(HttpMethod.Delete, "accessor", $"/phonebook/{name}");
+
+                _logger.LogInformation("Deleted {result} phone with name: {name}", result, name);
+                return Ok($"Deleted {result} phone with name: {name}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
         [HttpPost("/add_phone_to_queue")]
         public async Task<ActionResult<PhoneName>> AddPhoneToQueueAsync(PhoneName phoneName)
         {
