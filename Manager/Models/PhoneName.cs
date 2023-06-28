@@ -6,7 +6,8 @@ namespace Manager.Models
     {
         [Required(ErrorMessage = "Name cannot be empty")]
         public required string Name { get; set; }
-        [Required(ErrorMessage = "Phone cannot be empty")]
+
+        [IsraeliPhoneNumber(ErrorMessage = "Phone number is not valid")]
         public required string Phone { get; set; }
     }
 }
