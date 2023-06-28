@@ -1,0 +1,97 @@
+version: '3.4'
+
+services:
+  ############################
+  # Manager app + Dapr sidecar
+  ############################
+  manager:
+    image: ${DOCKER_REGISTRY-}manager
+    build:
+      context: .
+      dockerfile: Manager/Dockerfile
+    #depends_on:
+    #  - placement
+    #  - zipkin
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - network-dapr
+
+  manager-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+        "-app-port", "80",
+        "-app-id", "manager",
+        "-app-protocol", "http",
+        "-dapr-http-port", "3500",
+        #"-placement-host-address", "placement:50006",
+        "-config", "./dapr/config.yaml",
+        "-log-level", "debug"]
+    volumes:
+      - "./dapr/:/dapr"
+    depends_on:
+      - manager
+    network_mode: "service:manager"
+
+  ############################
+  # Accessor + Dapr sidecar
+  ############################
+  accessor:
+    image: ${DOCKER_REGISTRY-}accessor
+    build:
+      context: .
+      dockerfile: Accessor/Dockerfile
+    #depends_on:
+    #  - placement
+    #  - zipkin
+    networks:
+      - network-dapr
+  accessor-dapr:
+    image: "daprio/daprd:edge"
+    command: ["./daprd",
+        "-app-port", "80",
+        "-app-id", "accessor",
+        "-app-protocol", "http",
+        "-dapr-http-port", "3500",
+        #"-placement-host-address", "placement:50006",
+        "-config", "./dapr/config.yaml",
+        "-log-level", "debug"]
+    volumes:
+      - "./dapr/:/dapr"
+    depends_on:
+      - accessor
+    network_mode: "service:accessor"
+
+  ############################
+  # Dapr placement service
+  ############################
+  #placement:
+  #  image: "daprio/dapr"
+  #  command: ["./placement", "-port", "50006"]
+  #  ports:
+  #    - "50006:50006"
+  #  networks:
+  #    - network-dapr 
+
+  ############################
+  # Dapr zipkin service
+  ############################
+  #zipkin:
+  #  image: "openzipkin/zipkin"
+  #  ports:
+  #    - "9411:9411"
+  #  networks:
+  #    - network-dapr
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27018:27017
+    networks:
+      - network-dapr  
+
+networks:
+  network-dapr:
+
+

@@ -22,6 +22,8 @@ namespace Accessor.Controllers
         {
             try
             {
+                _logger.LogInformation("in GetAllPhonesAsync method");
+
                 var result = await _phoneBookService.GetAllAsync();
 
                 if (result is null)
@@ -47,6 +49,8 @@ namespace Accessor.Controllers
         {
             try
             {
+                _logger.LogInformation("in AddPhoneAsync method");
+
                 var result = await _phoneBookService.AddPhoneName(phoneName);
 
                 if (result is null)

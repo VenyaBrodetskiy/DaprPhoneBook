@@ -22,7 +22,7 @@ namespace Manager.Controllers
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "phoneaccessor", "/phonebook");
+                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", "/phonebook");
 
                 if (result is null)
                 {
@@ -47,7 +47,7 @@ namespace Manager.Controllers
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<PhoneName, PhoneName>(HttpMethod.Post, "phoneaccessor", "/phonebook", phoneName);
+                var result = await _daprClient.InvokeMethodAsync<PhoneName, PhoneName>(HttpMethod.Post, "accessor", "/phonebook", phoneName);
 
                 if (result is null)
                 {
