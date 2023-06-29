@@ -3,9 +3,16 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "manager",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
         "manager": "StartDebugging",
-        "accessor": "StartDebugging"
+        "accessor": "StartDebugging",
+        "accessor-dapr": "StartWithoutDebugging",
+        "manager-dapr": "StartWithoutDebugging",
+        "mongodb": "StartWithoutDebugging",
+        "rabbitmq": "StartWithoutDebugging"
       }
     }
   }

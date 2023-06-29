@@ -29,7 +29,8 @@ services:
         #"-placement-host-address", "placement:50006",
         "-components-path", "./dapr/components",
         "-config", "./dapr/config.yaml",
-        "-log-level", "debug"]
+        # "-log-level", "debug"
+        ]
     volumes:
       - "./dapr/:/dapr"
     depends_on:
@@ -61,7 +62,8 @@ services:
         #"-placement-host-address", "placement:50006",
         "-components-path", "./dapr/components",
         "-config", "./dapr/config.yaml",
-        "-log-level", "debug"]
+        # "-log-level", "debug"
+        ]
     volumes:
       - "./dapr/:/dapr"
     depends_on:

@@ -44,14 +44,14 @@ namespace Accessor.Controllers
             }
         }
 
-        [HttpGet("/phonebook/{name}")]
-        public async Task<ActionResult<List<PhoneName>>> GetPhoneByNameAsync(string name)
+        [HttpGet("/phonebook/{phone}")]
+        public async Task<ActionResult<List<PhoneName>>> GetPhoneByNameAsync(string phone)
         {
             try
             {
                 _logger.LogInformation("in GetPhoneByNameAsync method");
 
-                var result = await _phoneBookService.GetByNameAsync(name);
+                var result = await _phoneBookService.GetByNameAsync(phone);
 
                 if (result is null)
                 {
@@ -71,16 +71,16 @@ namespace Accessor.Controllers
             }
         }
 
-        [HttpDelete("/phonebook/{name}")]
-        public async Task<ActionResult<long>> DeletePhoneByNameAsync(string name)
+        [HttpDelete("/phonebook/{phone}")]
+        public async Task<ActionResult<long>> DeletePhoneAsync(string phone)
         {
             try
             {
                 _logger.LogInformation("in DeletePhoneByNameAsync method");
 
-                var result = await _phoneBookService.DeleteByNameAsync(name);
+                var result = await _phoneBookService.DeletePhoneAsync(phone);
 
-                _logger.LogInformation("Deleted {result} phone with name: {name}", result, name);
+                _logger.LogInformation("Deleted {result} phone with name: {name}", result, phone);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -90,8 +90,8 @@ namespace Accessor.Controllers
             }
         }
 
-        [HttpPost("/phonebook")]
-        public async Task<ActionResult<List<PhoneName>>> AddPhoneAsync(PhoneName phoneName)
+        [HttpPost("/phonequeue")]
+        public async Task<ActionResult<PhoneName>> AddPhoneAsync(PhoneName phoneName)
         {
             try
             {

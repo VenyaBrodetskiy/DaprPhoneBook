@@ -44,11 +44,11 @@ namespace Manager.Controllers
 
         [HttpGet("/phonebook")]
         public async Task<ActionResult<List<PhoneName>>> GetPhoneByNameAsync(
-            [FromQuery(Name = "name")] string name)
+            [FromQuery(Name = "phone")] string phone)
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", $"/phonebook/{name}");
+                var result = await _daprClient.InvokeMethodAsync<List<PhoneName>>(HttpMethod.Get, "accessor", $"/phonebook/{phone}");
 
                 if (result is null)
                 {
@@ -70,14 +70,14 @@ namespace Manager.Controllers
 
         [HttpDelete("/phonebook")]
         public async Task<ActionResult<List<PhoneName>>> DeletePhoneByNameAsync(
-            [FromQuery(Name = "name")] string name)
+            [FromQuery(Name = "phone")] string phone)
         {
             try
             {
-                var result = await _daprClient.InvokeMethodAsync<long>(HttpMethod.Delete, "accessor", $"/phonebook/{name}");
+                var result = await _daprClient.InvokeMethodAsync<long>(HttpMethod.Delete, "accessor", $"/phonebook/{phone}");
 
-                _logger.LogInformation("Deleted {result} phone with name: {name}", result, name);
-                return Ok($"Deleted {result} phone with name: {name}");
+                _logger.LogInformation("Deleted {result} phone with name: {name}", result, phone);
+                return Ok($"Deleted {result} phone with name: {phone}");
             }
             catch (Exception ex)
             {
@@ -86,7 +86,7 @@ namespace Manager.Controllers
             }
         }
 
-        [HttpPost("/add_phone_to_queue")]
+        [HttpPost("/phonebook")]
         public async Task<ActionResult<PhoneName>> AddPhoneToQueueAsync(PhoneName phoneName)
         {
             try
@@ -95,31 +95,6 @@ namespace Manager.Controllers
 
                 _logger.LogInformation("Sucessfully added");
                 return Ok("Sucessfully added to phonequeue");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return Problem(ex.Message);
-            }
-        }
-
-        [HttpPost("/phonequeue")]
-        public async Task<ActionResult<PhoneName>> AddPhoneAsync(PhoneName phoneName)
-        {
-            try
-            {
-                var result = await _daprClient.InvokeMethodAsync<PhoneName, PhoneName>(HttpMethod.Post, "accessor", "/phonebook", phoneName);
-
-                if (result is null)
-                {
-                    _logger.LogInformation("Couldn't add phone");
-                    return BadRequest("Couldn't add phone");
-                }
-                else
-                {
-                    _logger.LogInformation("Sucessfully added");
-                    return Ok(result);
-                }
             }
             catch (Exception ex)
             {

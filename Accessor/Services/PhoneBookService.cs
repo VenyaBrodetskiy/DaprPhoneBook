@@ -26,11 +26,11 @@ namespace Accessor.Services
             }
         }
 
-        public async Task<List<PhoneName>?> GetByNameAsync(string name)
+        public async Task<List<PhoneName>?> GetByNameAsync(string phone)
         {
             try
             {
-                var result = await _db.phoneNameCollection.Find(row => row.Name == name).ToListAsync();
+                var result = await _db.phoneNameCollection.Find(row => row.Phone == phone).ToListAsync();
 
                 return result.Select(FromDto).ToList();
             }
@@ -54,11 +54,11 @@ namespace Accessor.Services
             }
         }
 
-        public async Task<long> DeleteByNameAsync(string name)
+        public async Task<long> DeletePhoneAsync(string phone)
         {
             try
             {
-                var result = await _db.phoneNameCollection.DeleteManyAsync(row => row.Name == name);
+                var result = await _db.phoneNameCollection.DeleteManyAsync(row => row.Phone == phone);
 
                 return result.DeletedCount;
             }
